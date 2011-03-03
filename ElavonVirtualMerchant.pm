@@ -6,7 +6,7 @@ use vars qw($VERSION);
 use Business::OnlinePayment::viaKLIX;
 use base qw(Business::OnlinePayment::viaKLIX);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 $VERSION = eval $VERSION;
 
 =head1 NAME
@@ -178,6 +178,7 @@ sub submit {
 
         ssl_first_name         => 'first_name',
         ssl_last_name          => 'last_name',
+        ssl_company            => 'company',
         ssl_avs_address        => 'address',
         ssl_city               => 'city',
         ssl_state              => 'state',
@@ -185,6 +186,15 @@ sub submit {
         ssl_country            => 'country',
         ssl_phone              => 'phone',
         ssl_email              => 'email',
+
+        ssl_ship_to_first_name => 'ship_first_name',
+        ssl_ship_to_last_name  => 'ship_last_name',
+        ssl_ship_to_company    => 'ship_company',
+        ssl_ship_to_address1   => 'ship_address',
+        ssl_ship_to_city       => 'ship_city',
+        ssl_ship_to_state      => 'ship_state',
+        ssl_ship_to_zip        => 'ship_zip',
+        ssl_ship_to_country    => 'ship_country',
 
     );
 
@@ -215,7 +225,7 @@ sub submit {
     # $page should contain key/value pairs
 
     my $status ='';
-    my %results = map { s/\s*$//; split '=', $_, 2 } split '^', $page;
+    my %results = map { s/\s*$//; split '=', $_, 2 } grep { /=/ } split '^', $page;
 
     # AVS and CVS values may be set on success or failure
     $self->avs_code( $results{ssl_avs_response} );

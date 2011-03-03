@@ -10,7 +10,7 @@ use Business::OnlinePayment;
 my $runinfo =
     "to test set environment variables:"
   . " (required) ELAVON_ACCOUNT, ELAVON_USERID, and ELAVON_PASSWORD"
-  . " (optonal) DEBUG, ELAVON_SERVER, and ELAVON_PATH";
+  . " (optional) DEBUG, ELAVON_SERVER, and ELAVON_PATH";
 
 plan(
       (   $ENV{"ELAVON_ACCOUNT"}
