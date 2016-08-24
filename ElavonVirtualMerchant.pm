@@ -1,12 +1,10 @@
 package Business::OnlinePayment::ElavonVirtualMerchant;
-
-use strict;
-use vars qw($VERSION);
-
-use Business::OnlinePayment::viaKLIX;
 use base qw(Business::OnlinePayment::viaKLIX);
 
-$VERSION = '0.02';
+use strict;
+use vars qw( $VERSION %maxlength );
+
+$VERSION = '0.03';
 $VERSION = eval $VERSION;
 
 =head1 NAME
@@ -121,6 +119,26 @@ for the transaction type are present, and submits the transaction.  Saves the re
 
 =cut
 
+%maxlength = (
+        ssl_description        => 255,
+        ssl_invoice_number     => 25,
+        ssl_customer_code      => 17,
+
+        ssl_first_name         => 20,
+        ssl_last_name          => 30,
+        ssl_company            => 50,
+        ssl_avs_address        => 30,
+        ssl_city               => 30,
+        ssl_phone              => 20,
+
+        ssl_ship_to_first_name => 20,
+        ssl_ship_to_last_name  => 30,
+        ssl_ship_to_company    => 50,
+        ssl_ship_to_address1   => 30,
+        ssl_ship_to_city       => 30,
+        ssl_ship_to_phone      => 20, #though we don't map anything to this...
+);
+
 sub submit {
     my ($self) = @_;
 
@@ -201,6 +219,9 @@ sub submit {
     my %params = $self->get_fields( @{$required{$type_action}},
                                     @{$optional{$type_action}},
                                   );
+
+    $params{$_} = substr($params{$_},0,$maxlength{$_})
+      foreach grep exists($maxlength{$_}), keys %params;
 
     foreach ( keys ( %{($self->{_defaults})} ) ) {
       $params{$_} = $self->{_defaults}->{$_} unless exists($params{$_});
